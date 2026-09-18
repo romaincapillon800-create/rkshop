@@ -306,7 +306,7 @@ function updateAuthUI() {
         : '<button type="button" class="auth-btn auth-btn-login" data-auth-action="login">Connexion</button><button type="button" class="auth-btn auth-btn-signup" data-auth-action="signup">Inscription</button>';
 
     authActions.querySelector('[data-dashboard-action]')?.addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/dashboard';
     });
     authActions.querySelector('[data-auth-signout]')?.addEventListener('click', signOut);
     authActions.querySelectorAll('[data-auth-action]').forEach((button) => {
