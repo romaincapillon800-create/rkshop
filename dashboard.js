@@ -1,123 +1,181 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RK SHOP - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-</head>
-<body class="dashboard-page">
-    <header class="dashboard-topbar">
-        <a href="/" class="dashboard-brand">RK SHOP</a>
-        <div class="dashboard-top-actions">
-            <span id="dashboardIdentity"></span>
-            <a href="/" class="dashboard-button dashboard-button-light dashboard-back-button">Retour à la boutique</a>
-            <button type="button" id="logoutButton" class="dashboard-button dashboard-button-light">Déconnexion</button>
-        </div>
-    </header>
+const currentUser = readCurrentUser();
+const notice = document.getElementById('dashboardNotice');
+const adminWorkspace = document.getElementById('adminWorkspace');
+const memberWorkspace = document.getElementById('memberWorkspace');
+let adminUsers = [];
+const API_BASE_URL = window.RKSHOP_API_URL || '';
 
-    <main class="dashboard-main">
-        <section class="dashboard-intro">
-            <p class="dashboard-eyebrow">Espace privé</p>
-            <h1 id="dashboardHeading">Mon dashboard</h1>
-            <p id="dashboardDescription">Retrouvez les informations de votre compte.</p>
-        </section>
+if (!currentUser) {
+    window.location.href = '/';
+} else {
+    document.getElementById('dashboardIdentity').textContent = currentUser.email;
+    document.getElementById('memberName').textContent = currentUser.name;
+    document.getElementById('memberEmail').textContent = currentUser.email;
+    document.getElementById('logoutButton').addEventListener('click', logout);
 
-        <p id="dashboardNotice" class="dashboard-notice" aria-live="polite"></p>
+    if (currentUser.role === 'admin') {
+        document.getElementById('dashboardHeading').textContent = 'Administration';
+        document.getElementById('dashboardDescription').textContent = 'Ajoutez des items et consultez les comptes de RK SHOP.';
+        adminWorkspace.hidden = false;
+        memberWorkspace.hidden = true;
+        setupAdminTabs();
+        document.getElementById('productForm').addEventListener('submit', addProduct);
+        document.getElementById('userSearch').addEventListener('input', filterUsers);
+        document.getElementById('loyaltyForm').addEventListener('submit', giveLoyaltyPoints);
+        if (!currentUser.token) {
+            showNotice('Session expirée. Reconnecte-toi depuis http://localhost:3000.');
+        } else {
+            loadAdminData();
+        }
+    }
+}
 
-        <section id="adminWorkspace" class="admin-workspace" hidden>
-            <div class="admin-layout">
-                <aside class="admin-sidebar" aria-label="Navigation administration">
-                    <p class="sidebar-label">Gestion</p>
-                    <button type="button" class="admin-tab active" data-admin-tab="overview">Vue d'ensemble</button>
-                    <button type="button" class="admin-tab" data-admin-tab="add">Ajouter un item</button>
-                    <button type="button" class="admin-tab" data-admin-tab="products">Catalogue</button>
-                    <button type="button" class="admin-tab" data-admin-tab="users">Utilisateurs</button>
-                    <button type="button" class="admin-tab" data-admin-tab="loyalty">Points fidélité</button>
-                    <button type="button" class="admin-tab" data-admin-tab="settings">Paramètres</button>
-                </aside>
+function readCurrentUser() {
+    try { return JSON.parse(localStorage.getItem('rkshop_current_user') || 'null'); }
+    catch { return null; }
+}
 
-                <div class="admin-content">
-                    <div class="admin-heading">
-                        <div>
-                            <p class="dashboard-eyebrow">Administration</p>
-                            <h2 id="adminPanelTitle">Vue d'ensemble</h2>
-                        </div>
-                        <span class="admin-badge">ADMIN</span>
-                    </div>
+function logout() {
+    localStorage.removeItem('rkshop_current_user');
+    window.location.href = '/';
+}
 
-                    <section class="admin-panel active" data-admin-panel="overview">
-                        <div class="overview-grid">
-                            <div class="overview-stat"><span>Items au catalogue</span><strong id="overviewProductCount">0</strong></div>
-                            <div class="overview-stat"><span>Comptes inscrits</span><strong id="overviewUserCount">0</strong></div>
-                            <div class="overview-stat"><span>État du site</span><strong>Actif</strong></div>
-                        </div>
-                        <div class="overview-note">
-                            <p class="dashboard-eyebrow">Actions rapides</p>
-                            <p>Utilise les onglets à gauche pour ajouter un item, consulter le catalogue ou gérer les utilisateurs.</p>
-                        </div>
-                    </section>
+async function apiRequest(url, options = {}) {
+    const apiUrl = API_BASE_URL
+        ? `${API_BASE_URL}${url}`
+        : (window.location.protocol === 'file:' ? `http://localhost:3000${url}` : url);
+    const headers = { ...(options.headers || {}), 'x-auth-token': currentUser.token };
+    const response = await fetch(apiUrl, { ...options, headers });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'Une erreur est survenue.');
+    return data;
+}
 
-                    <section class="admin-panel" data-admin-panel="add">
-                        <form id="productForm" class="product-form">
-                            <label>Nom de l'item<input name="name" type="text" placeholder="Ex. Veste Premium" required></label>
-                            <label>Catégorie<select name="category" required><option value="sneakers">Sneakers</option><option value="vestes">Vestes</option><option value="vetements">Vêtements</option><option value="accessoires">Accessoires</option><option value="tech">Tech</option></select></label>
-                            <label class="form-wide">Description<textarea name="description" rows="4" placeholder="Description de l'item" required></textarea></label>
-                            <label class="form-wide">Image (URL facultative)<input name="image" type="url" placeholder="https://..."></label>
-                            <button type="submit" class="dashboard-button dashboard-button-gold">Ajouter l'item</button>
-                        </form>
-                    </section>
+async function loadAdminData() {
+    try {
+        const [products, users] = await Promise.all([apiRequest('/api/products'), apiRequest('/api/users')]);
+        renderProducts(products);
+        renderUsers(users);
+        renderLoyaltyUsers(users);
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
 
-                    <section class="admin-panel" data-admin-panel="products">
-                        <div class="section-heading"><h2>Items enregistrés</h2><strong id="productCount">0</strong></div>
-                        <ul id="productList" class="data-list"></ul>
-                    </section>
+async function addProduct(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+        await apiRequest('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.fromEntries(formData.entries()))
+        });
+        form.reset();
+        showNotice('Item ajouté au catalogue.');
+        await loadAdminData();
+    } catch (error) {
+        showNotice(error.message);
+    } finally {
+        button.disabled = false;
+    }
+}
 
-                    <section class="admin-panel" data-admin-panel="users">
-                        <div class="section-heading"><h2>Comptes inscrits</h2><strong id="userCount">0</strong></div>
-                        <label class="user-search-field">
-                            <span>Rechercher un utilisateur</span>
-                            <input id="userSearch" type="search" placeholder="Nom, email ou rôle...">
-                        </label>
-                        <ul id="userList" class="data-list"></ul>
-                    </section>
+function renderProducts(products) {
+    document.getElementById('productCount').textContent = products.length;
+    document.getElementById('overviewProductCount').textContent = products.length;
+    document.getElementById('productList').innerHTML = products.length
+        ? products.map(product => `<li><div><strong>${escapeHtml(product.name)}</strong><span>${escapeHtml(product.category)}</span></div><em>${new Date(product.createdAt).toLocaleDateString('fr-FR')}</em></li>`).join('')
+        : '<li>Aucun item ajouté.</li>';
+}
 
-                    <section class="admin-panel" data-admin-panel="loyalty">
-                        <div class="loyalty-intro">
-                            <p class="dashboard-eyebrow">Programme fidélité</p>
-                            <h3>Récompenser un utilisateur</h3>
-                            <p>Ajoute des points au compte sélectionné. Le nouveau solde est enregistré directement dans la base.</p>
-                        </div>
-                        <form id="loyaltyForm" class="loyalty-form">
-                            <label>Utilisateur<select id="loyaltyUser" name="userId" required><option value="">Choisir un utilisateur</option></select></label>
-                            <label>Points à donner<input id="loyaltyPoints" name="points" type="number" min="1" max="100000" placeholder="Ex. 100" required></label>
-                            <button type="submit" class="dashboard-button dashboard-button-gold">Donner les points</button>
-                        </form>
-                        <div class="section-heading loyalty-heading"><h2>Soldes actuels</h2></div>
-                        <ul id="loyaltyList" class="data-list"></ul>
-                    </section>
+function renderUsers(users) {
+    adminUsers = users;
+    document.getElementById('userCount').textContent = users.length;
+    document.getElementById('overviewUserCount').textContent = users.length;
+    document.getElementById('userList').innerHTML = users.map(user => `<li><div><strong>${escapeHtml(user.name)}</strong><span>${escapeHtml(user.email)}</span></div><em>${escapeHtml(user.role || 'user')}</em></li>`).join('');
+}
 
-                    <section class="admin-panel" data-admin-panel="settings">
-                        <div class="settings-box">
-                            <p class="dashboard-eyebrow">Paramètres</p>
-                            <h3>Configuration de RK SHOP</h3>
-                            <p>Les produits sont enregistrés dans la base locale. Les accès administrateur restent réservés au compte admin.</p>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </section>
+function renderLoyaltyUsers(users) {
+    const userSelect = document.getElementById('loyaltyUser');
+    userSelect.innerHTML = '<option value="">Choisir un utilisateur</option>' + users
+        .filter(user => user.role !== 'admin')
+        .map(user => `<option value="${escapeHtml(user.id)}">${escapeHtml(user.name)} - ${escapeHtml(user.email)}</option>`)
+        .join('');
 
-        <section id="memberWorkspace" class="member-workspace">
-            <div class="member-card">
-                <span class="dashboard-eyebrow">Compte connecté</span>
-                <h2 id="memberName">-</h2>
-                <p id="memberEmail">-</p>
-            </div>
-        </section>
-    </main>
-    <script src="config.js"></script>
-    <script src="dashboard.js"></script>
-</body>
-</html>
+    document.getElementById('loyaltyList').innerHTML = users.length
+        ? users.map(user => `<li><div><strong>${escapeHtml(user.name)}</strong><span>${escapeHtml(user.email)}</span></div><em>${Number(user.points) || 0} points</em></li>`).join('')
+        : '<li>Aucun utilisateur.</li>';
+}
+
+async function giveLoyaltyPoints(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const userId = document.getElementById('loyaltyUser').value;
+    const points = Number(document.getElementById('loyaltyPoints').value);
+    const button = form.querySelector('button[type="submit"]');
+    if (!userId || !Number.isInteger(points) || points <= 0) {
+        showNotice('Choisis un utilisateur et indique un nombre de points valide.');
+        return;
+    }
+
+    button.disabled = true;
+    try {
+        await apiRequest(`/api/users/${encodeURIComponent(userId)}/points`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ points })
+        });
+        form.reset();
+        showNotice(`${points} points ajoutés avec succès.`);
+        await loadAdminData();
+    } catch (error) {
+        showNotice(error.message);
+    } finally {
+        button.disabled = false;
+    }
+}
+
+function filterUsers(event) {
+    const searchTerm = event.target.value.trim().toLowerCase();
+    const filteredUsers = adminUsers.filter((user) => {
+        const searchableText = `${user.name} ${user.email} ${user.role || 'user'}`.toLowerCase();
+        return searchableText.includes(searchTerm);
+    });
+    document.getElementById('userCount').textContent = filteredUsers.length;
+    document.getElementById('userList').innerHTML = filteredUsers.length
+        ? filteredUsers.map(user => `<li><div><strong>${escapeHtml(user.name)}</strong><span>${escapeHtml(user.email)}</span></div><em>${escapeHtml(user.role || 'user')}</em></li>`).join('')
+        : '<li>Aucun utilisateur trouvé.</li>';
+}
+
+function setupAdminTabs() {
+    const title = document.getElementById('adminPanelTitle');
+    const labels = {
+        overview: "Vue d'ensemble",
+        add: 'Ajouter un item',
+        products: 'Catalogue',
+        users: 'Utilisateurs',
+        loyalty: 'Points fidélité',
+        settings: 'Paramètres'
+    };
+
+    document.querySelectorAll('[data-admin-tab]').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            const selectedPanel = tab.dataset.adminTab;
+            document.querySelectorAll('[data-admin-tab]').forEach((item) => item.classList.toggle('active', item === tab));
+            document.querySelectorAll('[data-admin-panel]').forEach((panel) => panel.classList.toggle('active', panel.dataset.adminPanel === selectedPanel));
+            title.textContent = labels[selectedPanel];
+        });
+    });
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+}
+
+function showNotice(message) {
+    notice.textContent = message;
+}
