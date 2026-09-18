@@ -82,7 +82,11 @@ function readRequestBody(request) {
 
 function serveStatic(request, response) {
     const requestedPath = decodeURIComponent(request.url.split('?')[0]);
-    const relativePath = requestedPath === '/' ? '/index.html' : requestedPath;
+    const pageRoutes = {
+        '/': '/index.html',
+        '/dashboard': '/dashboard.html'
+    };
+    const relativePath = pageRoutes[requestedPath] || requestedPath;
     const filePath = path.normalize(path.join(ROOT, relativePath));
     const protectedFiles = new Set(['database.json', 'server.js', 'package.json']);
     if (protectedFiles.has(path.basename(filePath).toLowerCase())) {
