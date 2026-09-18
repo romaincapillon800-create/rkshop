@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "rkshop-admin-test",
+      "name": "Administrateur RK SHOP",
+      "email": "admin@rkshop.local",
+      "passwordHash": "3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121",
+      "role": "admin",
+      "createdAt": "2026-09-18T00:00:00.000Z"
+    },
+    {
+      "id": "457ba4a9-54ff-4f88-9df7-2d1f77b6b0bb",
+      "name": "kaydox",
+      "email": "kaydox360@gmail.com",
+      "passwordHash": "1564ca6e2bb41469e41898670aa15b6daed440ab40e2f37716e5ac106939a73c",
+      "role": "user",
+      "createdAt": "2026-09-18T07:46:25.134Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "6553b30f-58fb-434a-be60-9adb83fcd2fb",
+      "name": "Therma-Fit",
+      "category": "vestes",
+      "description": "Le Therma-FIT est une technologie de tissu créée par Nike qui aide à garder le corps au chaud par temps froid.",
+      "image": "https://img.leboncoin.fr/api/v1/lbcpb1/images/89/d3/e9/89d3e9b793f9be127ca23ae74e44ce69b56854e9.jpg?rule=ad-large",
+      "createdAt": "2026-09-18T08:03:20.259Z"
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK SHOP - Catalogue Luxe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="https://scontent-cdg4-2.cdninstagram.com/v/t51.82787-19/675458548_18102302602780261_7101257573948391791_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDI0LkMzIn0%3D&_nc_ohc=yXwCwa2Z4poQ7kNvwFztSLo&_nc_oc=Adorx_AcgDoS_BPtT5wNQXym-BF-pOuwikO9l6mI74k7dqlQa7sHXgjuVLQT4eJovvw&_nc_zt=24&_nc_ht=scontent-cdg4-2.cdninstagram.com&_nc_gid=bB4IDA7wuwWn1aFw3nojCg&_nc_ss=78689&oh=00_AQKUBGkdBfZxqtLZbeG2Mhb9bhdrvzU5zZcHq35DCvYT0w&oe=6AA05D1B">
+    <meta property="og:image" content="https://scontent-cdg4-2.cdninstagram.com/v/t51.82787-19/675458548_18102302602780261_7101257573948391791_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDI0LkMzIn0%3D&_nc_ohc=yXwCwa2Z4poQ7kNvwFztSLo&_nc_oc=Adorx_AcgDoS_BPtT5wNQXym-BF-pOuwikO9l6mI74k7dqlQa7sHXgjuVLQT4eJovvw&_nc_zt=24&_nc_ht=scontent-cdg4-2.cdninstagram.com&_nc_gid=bB4IDA7wuwWn1aFw3nojCg&_nc_ss=78689&oh=00_AQKUBGkdBfZxqtLZbeG2Mhb9bhdrvzU5zZcHq35DCvYT0w&oe=6AA05D1B">
+    <meta property="og:title" content="RK SHOP - Catalogue Premium">
+    <meta property="og:description" content="Catalogue luxe - 52 produits de marques prestigieuses">
+</head>
+<body>
+    <!-- Animated backgrounds removed for luxury aesthetic -->
+    <div class="background-particles"></div>
+    <div class="floating-orbs"></div>
+    <div class="cursor-trail"></div>
+    <div class="cursor-glow"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="auth-actions" aria-label="Compte utilisateur">
+                <button type="button" class="auth-btn auth-btn-login" data-auth-action="login">Connexion</button>
+                <button type="button" class="auth-btn auth-btn-signup" data-auth-action="signup">Inscription</button>
+            </div>
+
+            <a href="#top" class="logo-link" aria-label="Retour en haut">
+                <h1 class="logo">RK SHOP</h1>
+            </a>
+
+            <p class="tagline">Collection Premium - 52 Produits Sélectionnés</p>
+        </div>
+    </header>
+
+    <div class="auth-modal" id="authModal" aria-hidden="true">
+        <div class="auth-modal-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+            <button type="button" class="auth-close" aria-label="Fermer la fenêtre">×</button>
+
+            <div class="auth-tabs" aria-label="Choisir le mode d'authentification">
+                <button type="button" class="auth-tab active" data-auth-tab="login">Connexion</button>
+                <button type="button" class="auth-tab" data-auth-tab="signup">Inscription</button>
+            </div>
+
+            <div class="auth-form-panel active" data-auth-panel="login">
+                <h2 id="authTitle">Bon retour</h2>
+                <p class="auth-subtitle">Connectez-vous pour accéder à votre compte.</p>
+
+                <form class="auth-form" data-auth-form="login">
+                    <label class="auth-field">
+                        <span>Email</span>
+                        <input type="email" placeholder="votre@email.com" required>
+                    </label>
+
+                    <label class="auth-field">
+                        <span>Mot de passe</span>
+                        <input type="password" placeholder="••••••••" required>
+                    </label>
+
+                    <button type="submit" class="auth-submit">Se connecter</button>
+                    <p class="auth-status" aria-live="polite"></p>
+                </form>
+            </div>
+
+            <div class="auth-form-panel" data-auth-panel="signup">
+                <h2>Créer un compte</h2>
+                <p class="auth-subtitle">Rejoignez RK SHOP pour recevoir les offres exclusives.</p>
+
+                <form class="auth-form" data-auth-form="signup">
+                    <label class="auth-field">
+                        <span>Nom complet</span>
+                        <input type="text" placeholder="Votre nom" required>
+                    </label>
+
+                    <label class="auth-field">
+                        <span>Email</span>
+                        <input type="email" placeholder="votre@email.com" required>
+                    </label>
+
+                    <label class="auth-field">
+                        <span>Mot de passe</span>
+                        <input type="password" placeholder="Créez un mot de passe" required>
+                    </label>
+
+                    <button type="submit" class="auth-submit">Créer mon compte</button>
+                    <p class="auth-status" aria-live="polite"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <!-- Coming Soon Banner -->
+            <div class="coming-soon-banner">
+                <div class="coming-soon-content">
+                    <h3>Site en Développement 👨‍💻</h3>
+                    <p>Notre plateforme sera bientôt officiellement lancée. Suivez notre Instagram @rk._shop pour les annonces exclusives et les nouveautés.</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Rechercher un produit...">
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">Tous</button>
+                <button class="filter-btn" data-category="sneakers">Sneakers</button>
+                <button class="filter-btn" data-category="vestes">Vestes</button>
+                <button class="filter-btn" data-category="vetements">Vêtements</button>
+                <button class="filter-btn" data-category="accessoires">Accessoires</button>
+                <button class="filter-btn" data-category="tech">Tech</button>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Product Details Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-image-container">
+                <img id="modalImage" src="" alt="Produit" class="modal-image">
+            </div>
+            <h2 id="modalTitle"></h2>
+            <p id="modalCategory"></p>
+            <div id="modalDescription"></div>
+            <button class="cta-btn" onclick="openQuoteRequest()">Demander un Renseignement</button>
+        </div>
+    </div>
+
+    <!-- Quote Request Modal -->
+    <div class="modal" id="quoteModal">
+        <div class="quote-card" id="quoteCard">
+            <h3 class="quote-product-name" id="quoteProductName"></h3>
+            <h3 class="quote-title">Compte Instagram</h3>
+            <p class="quote-account">@rk._shop</p>
+            <div class="quote-image">
+                <img id="quoteCardImage" src="https://cdn.discordapp.com/attachments/1455033357196070974/1486377016520343744/Capture_decran_2026-03-11_221528.png?ex=69c547f8&is=69c3f678&hm=2db366a3004bac40727f6c1d9d2dda2c0d64b49f4b9229b137fb8474ddd0d641&" alt="Devis" class="quote-img">
+            </div>
+            <div id="timerDisplay" class="timer-display" style="display:none;">
+                <p class="timer-text">Redirection dans <span class="timer-number" id="timerNumber">10</span>s</p>
+            </div>
+            <p class="quote-instruction" id="quoteInstruction">Envoyez un message direct sur Instagram avec les détails du produit de votre intérêt. Nous répondrons rapidement. Vérifier si vous avez activer les Pop-ut de la page !</p>
+            <button class="cta-btn" onclick="backToProduct()">← Retour au Produit</button>
+        </div>
+    </div>
+
+    <!-- Assistant shopping flottant -->
+    <div class="shop-assistant" id="shopAssistant">
+        <section class="assistant-panel" id="assistantPanel" aria-label="Assistant RK Shop" aria-hidden="true">
+            <div class="assistant-header">
+                <div>
+                    <p class="assistant-eyebrow">RK SHOP</p>
+                    <h2>Conseiller shopping</h2>
+                </div>
+                <button type="button" class="assistant-close" id="assistantClose" aria-label="Fermer l'assistant">&times;</button>
+            </div>
+            <div class="assistant-messages" id="assistantMessages" aria-live="polite"></div>
+            <div class="assistant-suggestions" id="assistantSuggestions">
+                <button type="button" data-assistant-prompt="Trouve-moi une paire de sneakers">Sneakers</button>
+                <button type="button" data-assistant-prompt="Je cherche une idée cadeau">Idée cadeau</button>
+                <button type="button" data-assistant-prompt="Comment vous contacter ?">Contact</button>
+            </div>
+            <form class="assistant-form" id="assistantForm">
+                <label class="sr-only" for="assistantInput">Votre question</label>
+                <input id="assistantInput" type="text" autocomplete="off" placeholder="Que recherchez-vous ?">
+                <button type="submit" aria-label="Envoyer">&rarr;</button>
+            </form>
+        </section>
+        <button type="button" class="assistant-toggle" id="assistantToggle" aria-expanded="false" aria-controls="assistantPanel">
+            <span class="assistant-toggle-icon" aria-hidden="true">✦</span>
+            <span>Assistant</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+                <div class="footer-section">
+                    <h3 class="footer-title">Nous Contacter / Besoin d'aide ?</h3>
+                    <p class="footer-text">Contactez-nous directement sur Instagram pour toute question sur les prix, tailles et disponibilités.</p>
+                    <a href="https://www.instagram.com/rk._shop/" target="_blank" class="instagram-btn">DM Instagram @rk._shop</a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <p class="year">© 2026 RK SHOP - Marque de luxe</p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="images-links.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
